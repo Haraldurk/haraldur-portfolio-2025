@@ -1,0 +1,42 @@
+name: Deploy to FTP servers
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  ftp-deploy:
+    name: Deploy to ${{ matrix.domain }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - domain: haraldur.net
+            server: ${{ secrets.FTP_SERVER_NET }}
+            username: ${{ secrets.FTP_USERNAME_NET }}
+            password: ${{ secrets.FTP_PASSWORD_NET }}
+          - domain: haraldur.pro
+            server: ${{ secrets.FTP_SERVER_PRO }}
+            username: ${{ secrets.FTP_USERNAME_PRO }}
+            password: ${{ secrets.FTP_PASSWORD_PRO }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: FTP Deploy
+      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      with:
+        server: ${{ matrix.server }}
+        username: ${{ matrix.username }}
+        password: ${{ matrix.password }}
+        server-dir: public_html/
+        protocol: ftps
+        port: 21
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          .github/
+          README.md
