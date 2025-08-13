@@ -1,4 +1,4 @@
-name: Deploy to FTP servers
+name: Deploy to Hostinger FTP
 
 on:
   push:
@@ -8,19 +8,8 @@ on:
 
 jobs:
   ftp-deploy:
-    name: Deploy to ${{ matrix.domain }}
+    name: FTP Deploy
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - domain: haraldur.net
-            server: ${{ secrets.FTP_SERVER_NET }}
-            username: ${{ secrets.FTP_USERNAME_NET }}
-            password: ${{ secrets.FTP_PASSWORD_NET }}
-          - domain: haraldur.pro
-            server: ${{ secrets.FTP_SERVER_PRO }}
-            username: ${{ secrets.FTP_USERNAME_PRO }}
-            password: ${{ secrets.FTP_PASSWORD_PRO }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -28,9 +17,9 @@ jobs:
     - name: FTP Deploy
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
       with:
-        server: ${{ matrix.server }}
-        username: ${{ matrix.username }}
-        password: ${{ matrix.password }}
+        server: ${{ secrets.FTP_SERVER_NET }}
+        username: ${{ secrets.FTP_USERNAME_NET }}
+        password: ${{ secrets.FTP_PASSWORD_NET }}
         server-dir: public_html/
         protocol: ftps
         port: 21
